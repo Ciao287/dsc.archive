@@ -21,5 +21,11 @@
   "bugs": {
     "url": "https://github.com/Ciao287/dsc.archive/issues"
   },
-  "homepage": "https://github.com/Ciao287/dsc.archive#readme"
+  "homepage": "https://github.com/Ciao287/dsc.archive#readme",
+  "devDependencies": {
+    "discord.js": "^14.26.5"
+  },
+  "peerDependencies": {
+    "discord.js": "^14.26.5"
+  }
 }
