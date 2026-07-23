@@ -1,8 +1,12 @@
 function hasTrueFields(fields) {
+    let hasFalseFields;
     for (const field of Object.values(fields)) {
         if ((typeof field !== "boolean" && typeof field !== "object") || (typeof field === "object" && (field === null || Array.isArray(field) || !Object.keys(field).length))) throw new TypeError('Field values must be true, false, or a non-empty object.');
         if (field === true) return true;
+        if (!hasFalseFields && field === false) hasFalseFields = true;
     };
+
+    if(!hasFalseFields) return true;
 
     return false;
 };
@@ -16,7 +20,7 @@ function filterFields(message, fields) {
         );
     };
 
-    const hasWhitelist = hasTrueFields(fields);
+    const hasWhitelist = hasTrueFields(fields, message);
 
     const filteredFields = {};
 
@@ -25,11 +29,7 @@ function filterFields(message, fields) {
             if (!(field in message)) continue;
 
             if (value === true) {
-                if (message[field] && typeof message[field] === "object") {
-                    filteredFields[field] = { ...message[field] };
-                } else {
-                    filteredFields[field] = message[field];
-                };
+                filteredFields[field] = message[field];
             } else if (value && typeof value === "object" && typeof message[field] === "object") {
                 const filteredFields2 = filterFields(message[field], value);
                 if (Object.keys(filteredFields2).length) {
@@ -40,11 +40,7 @@ function filterFields(message, fields) {
     } else {
         for (const [field, value] of Object.entries(message)) {
             if (!(field in fields)) {
-                if (typeof value === "object") {
-                    filteredFields[field] = { ...value };
-                } else {
-                    filteredFields[field] = value;
-                };
+                filteredFields[field] = value;
                 continue;
             };
 
@@ -66,6 +62,8 @@ function filterFields(message, fields) {
 
 async function fetchMessages(channel, amount = 100, fields) {
     if (!channel) throw new TypeError(`Channel is not valid.`);
+
+    channel = await channel;
     
     if (typeof channel.isTextBased !== "function") throw new TypeError(`Channel is not valid.`);
 

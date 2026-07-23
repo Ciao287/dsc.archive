@@ -1,5 +1,4 @@
-# dsc.archive  (Beta v0.1.1)
-Demo: coming soon
+# dsc.archive  (Beta v0.1.2)
 
 **🧪 This library is currently in beta, its functions may change radically between releases.**
 
@@ -8,10 +7,45 @@ A library that allows you to fetch and archive messages from a Discord channel u
 The goal of the project is to be able to export messages into various formats, such as HTML, JSON, and TXT, so that it can help create transcripts for tickets.
 
 ## How to install it?
-To install it, go to the folder of your Node.js project with which you would like to use the library and run the following command in the terminal:
+To install it, go to the folder of your Node.js project where you would like to use the library and run the following command in the terminal:
 ```bash
 npm install dsc.archive
 ```
+**Compatibility:** This library is compatible with all **discord.js v14** versions. However, it's recommended to use the latest v14 release.
+
+## Quick setup guide
+If you want to quickly try out the library or simply understand how it works, this is the right section for you:
+1) if you don't already have it, install [Node.js](https://nodejs.org/en/download/current);
+2) create a folder and open it in terminal;
+3) run in the terminal:
+```bash
+npm init -y
+npm i dsc.archive
+```
+4) create a file called `index.js` and paste this code into it:
+```js
+const { Client } = require('discord.js');
+const { fetchMessages } = require("dsc.archive");
+
+const client = new Client({ intents: [] });
+
+client.login("YOUR_BOT_TOKEN").then(async () => {
+    const channel = await client.channels.fetch("CHANNEL_ID");
+    const messages = await fetchMessages(channel, 1);
+    console.log(messages);
+    
+    process.exit(0);
+});
+```
+5) replace:
+   - `YOUR_BOT_TOKEN` with the token of the Discord bot you want to test the library with (create an application if you don't already have one): https://discord.com/developers/applications/,
+   - `CHANNEL_ID` with the ID of a Discord channel your bot has access to;
+6) make sure that the bot has the `Message Content Intent` enabled and the permission to view and read message history in the channel;
+7) run in the terminal:
+```bash
+node .
+```
+Keep reading below to learn how to use all the available features.
 
 ## How to use it?
 ### fetchMessages()
@@ -50,21 +84,21 @@ const result = await fetchMessages(channel, 1, {id: false})
 console.log(result) /* returns something like:
 [
   {
-    channelId: 'ChannelID',
-    guildId: 'GuildID',
-    createdTimestamp: Timestamp,
+    channelId: '1040728682286821490',
+    guildId: '1040728681842229299',
+    createdTimestamp: 1784674774982,
     type: 0,
     system: false,
-    content: 'message content',
-    author: {
-      id: 'UserID',
+    content: 'UwU',
+    author: User {
+      id: '687333016921440317',
       bot: false,
       system: false,
       flags: [UserFlagsBitField],
-      username: 'Username',
-      globalName: 'GlobalName',
+      username: 'ciao287',
+      globalName: 'Ciao287',
       discriminator: '0',
-      avatar: 'Avatar',
+      avatar: '13aef81433f5bbd486a0e591bd6d2d80',
       banner: null,
       accentColor: null,
       avatarDecoration: null,
@@ -75,16 +109,16 @@ console.log(result) /* returns something like:
     pinned: false,
     tts: false,
     nonce: null,
-    embeds: {},
-    components: {},
-    attachments: {},
-    stickers: {},
+    embeds: [],
+    components: [],
+    attachments: Collection(0) [Map] {},
+    stickers: Collection(0) [Map] {},
     position: null,
     roleSubscriptionData: null,
     resolved: null,
     editedTimestamp: null,
-    reactions: { message: [Message] },
-    mentions: {
+    reactions: ReactionManager { message: [Message] },
+    mentions: MessageMentions {
       everyone: false,
       users: Collection(0) [Map] {},
       roles: Collection(0) [Map] {},
@@ -98,12 +132,12 @@ console.log(result) /* returns something like:
     groupActivityApplication: null,
     applicationId: null,
     activity: null,
-    flags: { bitfield: 0 },
+    flags: MessageFlagsBitField { bitfield: 0 },
     reference: null,
     interactionMetadata: null,
     interaction: null,
     poll: null,
-    messageSnapshots: {},
+    messageSnapshots: Collection(0) [Map] {},
     call: null,
     sharedClientTheme: null
   }
@@ -116,15 +150,15 @@ const result = await fetchMessages(channel, 1, {id: true, author: {id: false}})
 console.log(result) /* returns something like:
 [
   {
-    id: 'MessageID',
+    id: '1529261588404637718',
     author: {
       bot: false,
       system: false,
       flags: [UserFlagsBitField],
-      username: 'Username',
-      globalName: 'GlobalName',
+      username: 'ciao287',
+      globalName: 'Ciao287',
       discriminator: '0',
-      avatar: 'Avatar',
+      avatar: '13aef81433f5bbd486a0e591bd6d2d80',
       banner: null,
       accentColor: null,
       avatarDecoration: null,
@@ -136,30 +170,28 @@ console.log(result) /* returns something like:
 ]
 */
 ```
-**Note: An object marked as true will turn a blacklist into a whitelist. I'm currently evaluating how to resolve this in future releases.**
-
 If the `fields` is `true`, it will return all message fields:
 ```js
 const result = await fetchMessages(channel, 1, true)
 console.log(result) /* returns something like:
 [
   {
-    channelId: 'ChannelID',
-    guildId: 'GuildID',
-    id: 'MessageID',
-    createdTimestamp: Timestamp,
+    channelId: '1040728682286821490',
+    guildId: '1040728681842229299',
+    id: '1529261588404637718',
+    createdTimestamp: 1784674774982,
     type: 0,
     system: false,
-    content: 'message content',
-    author: {
-      id: 'UserID',
+    content: 'UwU',
+    author: User {
+      id: '687333016921440317',
       bot: false,
       system: false,
       flags: [UserFlagsBitField],
-      username: 'Username',
-      globalName: 'GlobalName',
+      username: 'ciao287',
+      globalName: 'Ciao287',
       discriminator: '0',
-      avatar: 'Avatar',
+      avatar: '13aef81433f5bbd486a0e591bd6d2d80',
       banner: null,
       accentColor: null,
       avatarDecoration: null,
@@ -170,16 +202,16 @@ console.log(result) /* returns something like:
     pinned: false,
     tts: false,
     nonce: null,
-    embeds: {},
-    components: {},
-    attachments: {},
-    stickers: {},
+    embeds: [],
+    components: [],
+    attachments: Collection(0) [Map] {},
+    stickers: Collection(0) [Map] {},
     position: null,
     roleSubscriptionData: null,
     resolved: null,
     editedTimestamp: null,
-    reactions: { message: [Message] },
-    mentions: {
+    reactions: ReactionManager { message: [Message] },
+    mentions: MessageMentions {
       everyone: false,
       users: Collection(0) [Map] {},
       roles: Collection(0) [Map] {},
@@ -193,12 +225,12 @@ console.log(result) /* returns something like:
     groupActivityApplication: null,
     applicationId: null,
     activity: null,
-    flags: { bitfield: 0 },
+    flags: MessageFlagsBitField { bitfield: 0 },
     reference: null,
     interactionMetadata: null,
     interaction: null,
     poll: null,
-    messageSnapshots: {},
+    messageSnapshots: Collection(0) [Map] {},
     call: null,
     sharedClientTheme: null
   }
@@ -211,12 +243,12 @@ const result = await fetchMessages(channel, 1)
 console.log(result) /* returns something like:
 [
   {
-    id: 'MessageID',
-    createdTimestamp: Timestamp,
-    content: 'message content',
+    id: '1529261588404637718',
+    createdTimestamp: 1784674774982,
+    content: 'UwU',
     author: {
-      id: 'UserID',
-      username: 'Username',
+      id: '687333016921440317',
+      username: 'ciao287',
       bot: false,
       system: false
     },
@@ -228,7 +260,7 @@ console.log(result) /* returns something like:
 
 ## Roadmap
 - [x] Fetch messages and filter them
-- [ ] Fix some filtering bugs
+- [x] Fix some filtering bugs
 - [ ] Export fetched messages as JSON
 - [ ] Export fetched messages as TXT
 - [ ] Export fetched messages as HTML
