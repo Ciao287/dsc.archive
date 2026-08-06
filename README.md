@@ -60,7 +60,7 @@ fetchMessages(channel, amount?, fields?, options?);
 `amount` must be an integer between 1 and Infinity. The default value is 100;
 
 `fields` can be `true` (all fields will be returned), `undefined` (default fields will be returned), or a non-empty object.
-You can see the current default fields here: [DefaultFields](https://github.com/Ciao287/dsc.archive/blob/eb8925229bd6c25586ebc25f819f5b4bfbdd93fb/index.d.ts#L12). To see the updated full list of every field available, visit: https://discord.js.org/docs/packages/discord.js/main/Message:Class.
+You can see the current default fields here: [DefaultFields](https://github.com/Ciao287/dsc.archive/blob/main/index.d.ts#L12). To see the updated full list of every field available, visit: https://discord.js.org/docs/packages/discord.js/main/Message:Class.
 
 `options` can be `true` (all options will be returned), `false` (none of the options will be returned) or a non-empty object to select which option should be returned.
 You can see the option list here: [Options](https://github.com/Ciao287/dsc.archive/blob/main/index.d.ts#L55) and the current default options here: [DefaultOptions](https://github.com/Ciao287/dsc.archive/blob/main/index.d.ts#L82).
