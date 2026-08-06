@@ -1,4 +1,4 @@
-# dsc.archive  (Beta v0.1.2)
+# dsc.archive  (Beta v0.2.0)
 
 **🧪 This library is currently in beta, its functions may change radically between releases.**
 
@@ -16,7 +16,7 @@ npm install dsc.archive
 ## Quick setup guide
 If you want to quickly try out the library or simply understand how it works, this is the right section for you:
 1) if you don't already have it, install [Node.js](https://nodejs.org/en/download/current);
-2) create a folder and open it in terminal;
+2) create a folder and open it in a terminal;
 3) run in the terminal:
 ```bash
 npm init -y
@@ -31,8 +31,8 @@ const client = new Client({ intents: [] });
 
 client.login("YOUR_BOT_TOKEN").then(async () => {
     const channel = await client.channels.fetch("CHANNEL_ID");
-    const messages = await fetchMessages(channel, 1);
-    console.log(messages);
+    const result = await fetchMessages(channel, 1);
+    console.log(result);
     
     process.exit(0);
 });
@@ -49,218 +49,79 @@ Keep reading below to learn how to use all the available features.
 
 ## How to use it?
 ### fetchMessages()
-Currently, the only function in the library is fetchMessages, which allows you to fetch a certain number of messages from a channel that supports messages, returning only the selected values ​​of those messages:
+Currently, the only function in the library is `fetchMessages`, which allows you to fetch messages from a Discord text-based channel, filter them, and return them in a `FetchedMessages` object:
 ```js
 const { fetchMessages } = require('dsc.archive');
 
-fetchMessages(channel, amount?, fields?);
-/*
-channel must be a Discord text-based channel;
-amount must be an integer between 1 and Infinity. The default if no value is entered is 100;
-fields can be true (all fields will be returned), undefined (default fields will be returned), or a non-empty object;
-the default fields if nothing is entered are:
-id: true,
-createdTimestamp: true,
-content: true,
-author: {
-    id: true,
-    username: true,
-    bot: true,
-    system: true,
-},
-editedTimestamp: true.
+fetchMessages(channel, amount?, fields?, options?);
+```
+`channel` must be a Discord text-based channel;
 
-For a complete list of Discord message properties, see: https://docs.discord.com/developers/resources/message
-*/
-```
-The field filtering system works according to a level-based whitelist/blacklist system. If at least one `true` field is present in a level, it will be whitelisted, displaying only the fields marked as `true` for that level.
+`amount` must be an integer between 1 and Infinity. The default value is 100;
+
+`fields` can be `true` (all fields will be returned), `undefined` (default fields will be returned), or a non-empty object.
+You can see the current default fields here: [DefaultFields](https://github.com/Ciao287/dsc.archive/blob/eb8925229bd6c25586ebc25f819f5b4bfbdd93fb/index.d.ts#L12). To see the updated full list of every field available, visit: https://discord.js.org/docs/packages/discord.js/main/Message:Class.
+
+`options` can be `true` (all options will be returned), `false` (none of the options will be returned) or a non-empty object to select which option should be returned.
+You can see the option list here: [Options](https://github.com/Ciao287/dsc.archive/blob/main/index.d.ts#L55) and the current default options here: [DefaultOptions](https://github.com/Ciao287/dsc.archive/blob/main/index.d.ts#L82).
+
+The field filtering system works according to a level-based whitelist/blacklist system. If no `false` fields are present in a level, it will be whitelisted, displaying only the fields marked as `true` and/or the nested objects selected at that level.
+
+Here's an example of the FetchedMessages structure:
 ```js
-const result = await fetchMessages(channel, 1, {id: true})
-console.log(result) // returns something like: [ { id: 'MessageID' } ]
+const result = await fetchMessages(channel, Infinity, true, true);
+
+console.log(result);
 ```
-If a level only contains `false` fields, it will be blacklisted, showing all fields except those selected as `false`:
-```js
-const result = await fetchMessages(channel, 1, {id: false})
-console.log(result) /* returns something like:
-[
-  {
-    channelId: '1040728682286821490',
-    guildId: '1040728681842229299',
-    createdTimestamp: 1784674774982,
-    type: 0,
-    system: false,
-    content: 'UwU',
-    author: User {
-      id: '687333016921440317',
-      bot: false,
-      system: false,
-      flags: [UserFlagsBitField],
-      username: 'ciao287',
-      globalName: 'Ciao287',
-      discriminator: '0',
-      avatar: '13aef81433f5bbd486a0e591bd6d2d80',
-      banner: null,
-      accentColor: null,
-      avatarDecoration: null,
-      avatarDecorationData: [Object],
-      collectibles: [Object],
-      primaryGuild: [Object]
-    },
-    pinned: false,
-    tts: false,
-    nonce: null,
-    embeds: [],
-    components: [],
-    attachments: Collection(0) [Map] {},
-    stickers: Collection(0) [Map] {},
-    position: null,
-    roleSubscriptionData: null,
-    resolved: null,
-    editedTimestamp: null,
-    reactions: ReactionManager { message: [Message] },
-    mentions: MessageMentions {
-      everyone: false,
-      users: Collection(0) [Map] {},
-      roles: Collection(0) [Map] {},
-      _members: null,
-      _channels: null,
-      _parsedUsers: null,
-      crosspostedChannels: Collection(0) [Map] {},
-      repliedUser: null
-    },
-    webhookId: null,
-    groupActivityApplication: null,
-    applicationId: null,
-    activity: null,
-    flags: MessageFlagsBitField { bitfield: 0 },
-    reference: null,
-    interactionMetadata: null,
-    interaction: null,
-    poll: null,
-    messageSnapshots: Collection(0) [Map] {},
-    call: null,
-    sharedClientTheme: null
-  }
-]
-*/
+It will return something similar to this:
 ```
-Whitelists and blacklists can be used at different levels:
-```js
-const result = await fetchMessages(channel, 1, {id: true, author: {id: false}})
-console.log(result) /* returns something like:
-[
-  {
-    id: '1529261588404637718',
-    author: {
-      bot: false,
-      system: false,
-      flags: [UserFlagsBitField],
-      username: 'ciao287',
-      globalName: 'Ciao287',
-      discriminator: '0',
-      avatar: '13aef81433f5bbd486a0e591bd6d2d80',
-      banner: null,
-      accentColor: null,
-      avatarDecoration: null,
-      avatarDecorationData: [Object],
-      collectibles: [Object],
-      primaryGuild: [Object]
-    }
-  }
-]
-*/
+FetchedMessages {
+  messages: [Messages],
+  guild: [Guild],
+  channel: [TextChannel],
+  authors: [Authors],
+  interactions: [Interactions],
+  webhooks: [Webhooks],
+  fetchTimestamp: 1786039623635,
+}
 ```
-If the `fields` is `true`, it will return all message fields:
+For an explanation of each of these properties, see [FetchedMessages](https://github.com/Ciao287/dsc.archive/blob/main/index.d.ts#L148).
+
+For `messages`, `authors`, `interactions` and `webhooks`, if the array or map has more than 5 entries, it will be replaced by `[Messages]`, `[Authors]`, `[Interactions]` and `[Webhooks]`, to improve readability. To access the full array/map:
 ```js
-const result = await fetchMessages(channel, 1, true)
-console.log(result) /* returns something like:
-[
-  {
-    channelId: '1040728682286821490',
-    guildId: '1040728681842229299',
-    id: '1529261588404637718',
-    createdTimestamp: 1784674774982,
-    type: 0,
-    system: false,
-    content: 'UwU',
-    author: User {
-      id: '687333016921440317',
-      bot: false,
-      system: false,
-      flags: [UserFlagsBitField],
-      username: 'ciao287',
-      globalName: 'Ciao287',
-      discriminator: '0',
-      avatar: '13aef81433f5bbd486a0e591bd6d2d80',
-      banner: null,
-      accentColor: null,
-      avatarDecoration: null,
-      avatarDecorationData: [Object],
-      collectibles: [Object],
-      primaryGuild: [Object]
-    },
-    pinned: false,
-    tts: false,
-    nonce: null,
-    embeds: [],
-    components: [],
-    attachments: Collection(0) [Map] {},
-    stickers: Collection(0) [Map] {},
-    position: null,
-    roleSubscriptionData: null,
-    resolved: null,
-    editedTimestamp: null,
-    reactions: ReactionManager { message: [Message] },
-    mentions: MessageMentions {
-      everyone: false,
-      users: Collection(0) [Map] {},
-      roles: Collection(0) [Map] {},
-      _members: null,
-      _channels: null,
-      _parsedUsers: null,
-      crosspostedChannels: Collection(0) [Map] {},
-      repliedUser: null
-    },
-    webhookId: null,
-    groupActivityApplication: null,
-    applicationId: null,
-    activity: null,
-    flags: MessageFlagsBitField { bitfield: 0 },
-    reference: null,
-    interactionMetadata: null,
-    interaction: null,
-    poll: null,
-    messageSnapshots: Collection(0) [Map] {},
-    call: null,
-    sharedClientTheme: null
-  }
-]
-*/
+result.messages.raw
+result.authors.raw
+result.interactions.raw
+result.webhooks.raw
 ```
-If fields is not entered or is entered as `undefined`:
+`guild` and `channel` will always be replaced by `[Guild]` and `[VARIOUS_TYPES_OF_CHANNEL]`. To access them you can just do:
 ```js
-const result = await fetchMessages(channel, 1)
-console.log(result) /* returns something like:
-[
-  {
-    id: '1529261588404637718',
-    createdTimestamp: 1784674774982,
-    content: 'UwU',
-    author: {
-      id: '687333016921440317',
-      username: 'ciao287',
-      bot: false,
-      system: false
-    },
-    editedTimestamp: null
-  }
-]
-*/
+result.guild
+result.channel
+```
+I added some custom functions to help you manage the result, especially when working with a lot of data:
+```js
+result.size //Alias of `result.messages.length`
+result.length //Alias of `result.messages.length`
+result.messages.raw
+result.messages.get('MESSAGE_ID') //Even though it's not a map, I thought this could be a useful shortcut
+result.messages.first(NUMBER) //Get the first message(s) in the array
+result.messages.last(NUMBER) //Get the last message(s) in the array
+result.authors.raw
+result.authors.first(NUMBER) //Get the first author(s) in the map
+result.authors.last(NUMBER) //Get the last author(s) in the map
+result.interactions.raw
+result.interactions.first(NUMBER) //Get the first author(s) that sent messages associated with interactions in the map
+result.interactions.last(NUMBER) //Get the last author(s) that sent messages associated with interactions in the map
+result.webhooks.raw
+result.webhooks.first(NUMBER) //Get the first webhooks(s) in the map
+result.webhooks.last(NUMBER) //Get the last webhooks(s) in the map
 ```
 
 ## Roadmap
 - [x] Fetch messages and filter them
 - [x] Fix some filtering bugs
+- [x] Improve fetchMessages
 - [ ] Export fetched messages as JSON
 - [ ] Export fetched messages as TXT
 - [ ] Export fetched messages as HTML

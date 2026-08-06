@@ -170,7 +170,7 @@ async function fetchMessages(channel, amount = 100, fields, options) {
     let messagesFetched = 0;
     let lastMessageFetched;
     let messages = [];
-    const fetchedTimestamp = Date.now();
+    const fetchTimestamp = Date.now();
     while (true) {
         let limit = Math.min(100, amount - messages.length);
         let msg = await channel.messages.fetch({limit: limit, before: lastMessageFetched});
@@ -219,7 +219,13 @@ async function fetchMessages(channel, amount = 100, fields, options) {
         }));
     };
 
-    return new FetchedMessages(messages, fetchedTimestamp, {guild: guildOption, channel: channelOption, authors: authorsOption, interactions: interactionsOption, webhooks: webhooksOption})
+    if (authorsOption && authorsOption.size === 0) authorsOption = null;
+
+    if (interactionsOption && interactionsOption.size === 0) interactionsOption = null;
+
+    if (webhooksOption && webhooksOption.size === 0) webhooksOption = null;
+
+    return new FetchedMessages(messages, fetchTimestamp, {guild: guildOption, channel: channelOption, authors: authorsOption, interactions: interactionsOption, webhooks: webhooksOption})
 };
 
 module.exports = fetchMessages;
