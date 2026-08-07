@@ -183,7 +183,7 @@ export class FetchedMessages {
     /**
      * The timestamp when the fetch started.
      */
-    fetchedTimestamp: number;
+    fetchTimestamp: number;
 
     /**
      * Alias of `messages.length`.
