@@ -138,7 +138,7 @@ async function fetchMessages(channel, amount = 100, fields, options) {
 
     if ((options !== undefined && typeof options !== "boolean" && typeof options !== "object") || (typeof options === "object" && (Array.isArray(options) || options === null))) throw new TypeError(`Objects must be undefined, boolean or an object.`);
     
-    if (options || options === undefined) options = optionsList;
+    if (options === true || options === undefined) options = optionsList;
 
     if (typeof options === "object" && !Object.keys(options).length) throw new TypeError(`Options object must contain at least one property.`);
 

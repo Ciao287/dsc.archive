@@ -1,4 +1,4 @@
-# dsc.archive  (Beta v0.2.0)
+# dsc.archive  (Beta v0.2.2)
 
 **🧪 This library is currently in beta, its functions may change radically between releases.**
 
