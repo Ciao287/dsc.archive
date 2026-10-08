@@ -3,6 +3,7 @@ const Messages = require ("./Messages.js");
 const Authors = require("./Authors.js");
 const Interactions = require("./Interactions.js");
 const Webhooks = require("./Webhooks.js");
+const JSONExporter = require("../functions/exporters/JSON.js");
 
 class FetchedMessages {
     constructor(messages, fetchTimestamp, options = {}) {
@@ -21,6 +22,10 @@ class FetchedMessages {
 
     get size() {
         return this.messages.length;
+    };
+
+    async toJSON(path, replacer, space) {
+        return JSONExporter(this, path, replacer, space);
     };
 
     [util.inspect.custom](depth, options) {

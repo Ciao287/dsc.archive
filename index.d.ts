@@ -1,4 +1,6 @@
 import { TextBasedChannel, Guild, User, GuildMember, Webhook } from "discord.js"
+import { PathLike } from "node:fs";
+import { FileHandle, writeFile } from "node:fs/promises";
 
 /**
  * The message properties to include or exclude from the result.
@@ -194,6 +196,19 @@ export class FetchedMessages {
      * Alias of `messages.length`.
      */
     readonly size: number;
+
+    /**
+     * Converts the {@link FetchedMessages} to JSON.
+     * If a path is provided, the JSON will also be written to that file.
+     * 
+     * Objects from discord.js are converted using their default `toJSON()` methods, so some objects may not be converted exactly as they appear before being converted to JSON.
+     * 
+     * @param path The path where the JSON will be written. See {@link writeFile}.
+     * @param replacer A function that transforms the results. See {@link JSON.stringify}.
+     * @param space Adds indentation, white space, and line break characters to the return-value JSON text to make it easier to read. See {@link JSON.stringify}.
+     * @returns The converted JSON string. See {@link JSON.stringify}.
+     */
+    toJSON(path?: PathLike | FileHandle, replacer?: (this: any, key: string, value: any) => any, space?: string | number): Promise<string>;
 }
 
 /**

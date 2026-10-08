@@ -1,4 +1,4 @@
-# dsc.archive  (Beta v0.2.2)
+# dsc.archive  (Beta v0.3.0)
 
 **🧪 This library is currently in beta, its functions may change radically between releases.**
 
@@ -14,6 +14,22 @@ npm install dsc.archive
 **Compatibility:** This library is compatible with all **discord.js v14** versions. However, it's recommended to use the latest v14 release.
 
 ## Quick setup guide
+### Are you lazy?
+### Yes
+- Join this Discord server: https://discord.gg/UbV46Wqa3D;
+- Find the `🛠️⠇try-the-library` channel (send a few messages if there aren't any in the channel);
+- Run the `/fetchmessages` command inside the `🛠️⠇try-the-library` channel.
+
+Other ways to test the library (optional):
+- 1
+  - Invite the bot to your server (if you don't want to join mine): https://discord.com/oauth2/authorize?client_id=1394088761989533780;
+  - Run the `/fetchmessages` command anywhere in the server where you added the bot.
+- 2
+  - Create your own Discord bot and add it to your server;
+  - Use my bot's code (which you can find here: https://github.com/Ciao287/dsc.archive-discord-bot) to create your own Discord bot;
+  - Modify the code if you want to test specific functions in detail;
+  - In this case, you aren't lazy and you know how JavaScript works, so you should head to the "No" section below :).
+### No
 If you want to quickly try out the library or simply understand how it works, this is the right section for you:
 1) if you don't already have it, install [Node.js](https://nodejs.org/en/download/current);
 2) create a folder and open it in a terminal;
@@ -94,15 +110,41 @@ result.authors.raw
 result.interactions.raw
 result.webhooks.raw
 ```
-`guild` and `channel` will always be replaced by `[Guild]` and `[VARIOUS_TYPES_OF_CHANNEL]`. To access them you can just do:
+`guild` and `channel` will always be replaced by `[Guild]` and various tipes of channels (example: `[TextChannel]`). To access them you can just do:
 ```js
 result.guild
 result.channel
 ```
-I added some custom functions to help you manage the result, especially when working with a lot of data:
+If you want to convert the fetched data into a JSON, you can use the `.toJSON()` method:
+```js
+result.toJSON(path?, replacer?, space?);
+```
+`path` The path where the JSON will be written. See [writeFile](https://nodejs.org/api/fs.html#fswritefilefile-data-options-callback).
+
+`replacer` A function that transforms the results. See [JSON.stringify](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#replacer).
+
+`space` Adds indentation, white space, and line break characters to the return-value JSON text to make it easier to read. See [JSON.stringify](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#space).
+
+If you just want to convert the data to JSON without writing it to a file:
+```js
+
+const messages = await result.toJSON();
+
+console.log(messages);
+```
+If you want to write the JSON to a file:
+```js
+const messages = await result.toJSON('./messages.json'); //This is an example path
+
+console.log(messages); //The method will still return the JSON string even when a file is written, so it can be used normally.
+```
+Objects from discord.js are converted using their default `.toJSON()` methods, so some objects may not be represented exactly as they appear before being converted to JSON.
+
+Here is a list of all the custom `result` functions I’ve added to help you manage and work with the result, especially when dealing with large amounts of data:
 ```js
 result.size //Alias of `result.messages.length`
 result.length //Alias of `result.messages.length`
+result.toJSON('PATH', REPLACER, SPACE) //Converts the result to JSON
 result.messages.raw
 result.messages.get('MESSAGE_ID') //Even though it's not a map, I thought this could be a useful shortcut
 result.messages.first(NUMBER) //Get the first message(s) in the array
@@ -122,7 +164,7 @@ result.webhooks.last(NUMBER) //Get the last webhooks(s) in the map
 - [x] Fetch messages and filter them
 - [x] Fix some filtering bugs
 - [x] Improve fetchMessages
-- [ ] Export fetched messages as JSON
+- [x] Export fetched messages as JSON
 - [ ] Export fetched messages as TXT
 - [ ] Export fetched messages as HTML
 
